@@ -11,4 +11,4 @@ COPY index.html /usr/share/nginx/html/index.html
 COPY . /usr/share/nginx/html/
 
 # Exposer le port 80 pour le serveur web Nginx
-EXPOSE 8082
+EXPOSE 80

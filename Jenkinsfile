@@ -28,7 +28,7 @@ pipeline {
               docker rm -f $IMAGE_NAME || echo "container does not exist"
               docker run --name $IMAGE_NAME -d -p ${PORT_EXPOSED}:80 ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG
               sleep 5
-              curl http://172.17.0.1:${PORT_EXPOSED} | grep -q "Playbook Stacker
+              curl http://172.17.0.1:${PORT_EXPOSED} | grep -q "Playbook Stacker"
            '''
          }
         }

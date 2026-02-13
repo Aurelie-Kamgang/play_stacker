@@ -1,5 +1,5 @@
 /* import shared library */
-@Library('shared-library')
+@Library('shared-library') _
 pipeline {
     agent none
     environment {

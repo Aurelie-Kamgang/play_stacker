@@ -1,5 +1,5 @@
-/* import shared library 
-@Library('shared-library')_*/
+/* import shared library */
+@Library('shared-library')_
 pipeline {
     agent none
     environment {
@@ -59,7 +59,7 @@ pipeline {
       stage('Deploy in staging'){
           agent any
             environment {
-                HOSTNAME_DEPLOY_STAGING = "100.27.230.116"
+                HOSTNAME_DEPLOY_STAGING = "34.229.17.10"
             }
           steps {
             sshagent(['SSH_AUTH_SERVER']) {
@@ -83,7 +83,7 @@ pipeline {
       stage('Deploy in prod'){
           agent any
             environment {
-                HOSTNAME_DEPLOY_PROD = "52.87.221.144"
+                HOSTNAME_DEPLOY_PROD = "100.53.133.3"
             }
           steps {
             sshagent(credentials: ['SSH_AUTH_SERVER']) {
@@ -106,11 +106,10 @@ pipeline {
       }        
     }
     post {
-        success {
-            slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+        always {
+            script {
+                slackNotifier currentBuild.result
+            }
         }
-        failure {
-            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-        }  
     }
 }

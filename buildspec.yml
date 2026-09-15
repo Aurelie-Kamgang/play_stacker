@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Connexion à Amazon ECR..."
+      - aws --version
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - AWS_REGION=${AWS_DEFAULT_REGION}
+      - ECR_REPO=play-stacker
+      - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      - IMAGE_TAG=latest
+
+  build:
+    commands:
+      - echo "Construction de l'image Docker..."
+      - docker build -t $ECR_REPO:$IMAGE_TAG .
+
+  post_build:
+    commands:
+      - echo "Tag de l'image..."
+      - docker tag $ECR_REPO:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+      - echo "Push de l'image vers Amazon ECR..."
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - echo "Build terminé avec succès. Image poussée vers $REPOSITORY_URI:$IMAGE_TAG"
